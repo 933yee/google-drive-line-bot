@@ -1,5 +1,4 @@
 from flask import Flask, request, abort
-from pyngrok import ngrok
 from dotenv import load_dotenv
 import os
 import json
@@ -99,6 +98,4 @@ def refresh_access_token(refresh_token, client_id, client_secret):
 
 
 if __name__ == "__main__":
-    public_url = ngrok.connect(5000)
-    print("Public URL:", public_url)
     app.run(port=5000)

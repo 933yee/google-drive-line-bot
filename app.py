@@ -42,7 +42,7 @@ def webhook():
 def download(message_id, is_image):
     download_url = f"https://api-data.line.me/v2/bot/message/{message_id}/content"
     headers = {"Authorization": f"Bearer {CHANNEL_ACCESS_TOKEN}"}
-
+    print(download_url)
     response = requests.get(download_url, headers=headers)
     if response.status_code == 200:
         data = response.content

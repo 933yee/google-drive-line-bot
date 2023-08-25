@@ -54,31 +54,34 @@ def download(message_id, is_image):
 
 
 def upload(data, name, access_token, is_image):
-    header = {"authorization": f"Bearer {access_token}"}
-    if is_image:
-        folder = image_folder
-        dataType = "image/jpeg"
-    else:
-        folder = video_folder
-        dataType = "video/mp4"
+    try:
+        header = {"authorization": f"Bearer {access_token}"}
+        if is_image:
+            folder = image_folder
+            dataType = "image/jpeg"
+        else:
+            folder = video_folder
+            dataType = "video/mp4"
 
-    param = {"name": f"{name}", "parents": [folder]}
+        param = {"name": f"{name}", "parents": [folder]}
 
-    files = {
-        "data": ("metadata", json.dumps(param), "application/json;charset=UTF-8"),
-        "file": (f"{name}", data, dataType),
-    }
+        files = {
+            "data": ("metadata", json.dumps(param), "application/json;charset=UTF-8"),
+            "file": (f"{name}", data, dataType),
+        }
 
-    response = requests.post(
-        "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart",
-        headers=header,
-        files=files,
-    )
+        response = requests.post(
+            "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart",
+            headers=header,
+            files=files,
+        )
 
-    if response.status_code == 200:
-        print("file uploaded successfully")
-    else:
-        print("fail to upload")
+        if response.status_code == 200:
+            print("file uploaded successfully")
+        else:
+            print("fail to upload")
+    except Exception as e:
+        print("An error occurred:", e)
 
 
 def refresh_access_token(refresh_token, client_id, client_secret):

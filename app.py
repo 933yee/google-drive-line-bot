@@ -63,9 +63,10 @@ def upload(data, name, access_token, is_image):
         folder = video_folder
         dataType = "video/mp4"
         print("is video")
-    print(folder)
-    param = {"name": f"{name}", "parents": [folder]}
 
+    param = {"name": f"{name}", "parents": [folder]}
+    print(access_token)
+    print(param)
     files = {
         "data": ("metadata", json.dumps(param), "application/json;charset=UTF-8"),
         "file": (f"{name}", data, dataType),

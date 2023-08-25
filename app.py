@@ -19,6 +19,9 @@ app = Flask(__name__)
 
 @app.route("/callback", methods=["POST"])
 def webhook():
+    print(client_id)
+    print(client_secret)
+    print(refresh_token)
     # signature = request.headers["X-Line-Signature"]
     body = request.get_data(as_text=True)
     try:

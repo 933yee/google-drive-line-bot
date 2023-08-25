@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import os
 import json
 import requests
+import pprint
 
 load_dotenv()
 CHANNEL_ACCESS_TOKEN = os.getenv("CHANNEL_ACCESS_TOKEN")
@@ -42,7 +43,7 @@ def webhook():
 def download(message_id, is_image):
     download_url = f"https://api-data.line.me/v2/bot/message/{message_id}/content"
     headers = {"Authorization": f"Bearer {CHANNEL_ACCESS_TOKEN}"}
-    print(download_url)
+
     response = requests.get(download_url, headers=headers)
     if response.status_code == 200:
         data = response.content
@@ -54,34 +55,31 @@ def download(message_id, is_image):
 
 
 def upload(data, name, access_token, is_image):
-    try:
-        header = {"authorization": f"Bearer {access_token}"}
-        if is_image:
-            folder = image_folder
-            dataType = "image/jpeg"
-        else:
-            folder = video_folder
-            dataType = "video/mp4"
+    header = {"authorization": f"Bearer {access_token}"}
+    if is_image:
+        folder = image_folder
+        dataType = "image/jpeg"
+    else:
+        folder = video_folder
+        dataType = "video/mp4"
 
-        param = {"name": f"{name}", "parents": [folder]}
+    param = {"name": f"{name}", "parents": [folder]}
 
-        files = {
-            "data": ("metadata", json.dumps(param), "application/json;charset=UTF-8"),
-            "file": (f"{name}", data, dataType),
-        }
+    files = {
+        "data": ("metadata", json.dumps(param), "application/json;charset=UTF-8"),
+        "file": (f"{name}", data, dataType),
+    }
+    pprint(files)
+    response = requests.post(
+        "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart",
+        headers=header,
+        files=files,
+    )
 
-        response = requests.post(
-            "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart",
-            headers=header,
-            files=files,
-        )
-
-        if response.status_code == 200:
-            print("file uploaded successfully")
-        else:
-            print("fail to upload")
-    except Exception as e:
-        print("An error occurred:", e)
+    if response.status_code == 200:
+        print("file uploaded successfully")
+    else:
+        print("fail to upload")
 
 
 def refresh_access_token(refresh_token, client_id, client_secret):

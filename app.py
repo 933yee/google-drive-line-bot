@@ -19,9 +19,6 @@ app = Flask(__name__)
 
 @app.route("/callback", methods=["POST"])
 def webhook():
-    print(client_id)
-    print(client_secret)
-    print(refresh_token)
     # signature = request.headers["X-Line-Signature"]
     body = request.get_data(as_text=True)
     try:
@@ -61,15 +58,11 @@ def upload(data, name, access_token, is_image):
     if is_image:
         folder = image_folder
         dataType = "image/jpeg"
-        print("is image")
     else:
         folder = video_folder
         dataType = "video/mp4"
-        print("is video")
 
     param = {"name": f"{name}", "parents": [folder]}
-    print(access_token)
-    print(param)
     files = {
         "data": ("metadata", json.dumps(param), "application/json;charset=UTF-8"),
         "file": (f"{name}", data, dataType),
@@ -94,11 +87,13 @@ def refresh_access_token(refresh_token, client_id, client_secret):
         "client_secret": client_secret,
         "grant_type": "refresh_token",
     }
+    print(payload)
     response = requests.post(token_url, data=payload)
     if response.status_code == 200:
         token_data = response.json()
         return token_data.get("access_token")
     else:
+        print(response.status_code)
         return None
 
 

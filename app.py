@@ -54,6 +54,8 @@ def download(message_id, is_image):
 
 
 def upload(data, name, access_token, is_image):
+    print(access_token)
+
     header = {"authorization": f"Bearer {access_token}"}
     if is_image:
         folder = image_folder
@@ -63,6 +65,7 @@ def upload(data, name, access_token, is_image):
         dataType = "video/mp4"
 
     param = {"name": f"{name}", "parents": [folder]}
+    print(param)
     files = {
         "data": ("metadata", json.dumps(param), "application/json;charset=UTF-8"),
         "file": (f"{name}", data, dataType),
@@ -72,7 +75,6 @@ def upload(data, name, access_token, is_image):
         headers=header,
         files=files,
     )
-
     if response.status_code == 200:
         print("file uploaded successfully")
     else:
@@ -87,13 +89,11 @@ def refresh_access_token(refresh_token, client_id, client_secret):
         "client_secret": client_secret,
         "grant_type": "refresh_token",
     }
-    print(payload)
     response = requests.post(token_url, data=payload)
     if response.status_code == 200:
         token_data = response.json()
         return token_data.get("access_token")
     else:
-        print(response.status_code)
         return None
 
 

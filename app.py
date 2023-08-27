@@ -3,6 +3,22 @@ from dotenv import load_dotenv
 import os
 import json
 import requests
+import threading
+import time
+
+
+def wake_up():
+    while True:
+        url = "https://google-drive-line-bot.onrender.com/" + "wake_up"
+        res = requests.get(url)
+        if res.status_code == 200:
+            print("wake up successfully")
+        else:
+            print("wake up failed")
+        time.sleep(5 * 60)
+
+
+threading.Thread(target=wake_up).start()
 
 load_dotenv()
 CHANNEL_ACCESS_TOKEN = os.getenv("CHANNEL_ACCESS_TOKEN")
